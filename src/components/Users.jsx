@@ -1,4 +1,5 @@
 import { use, useState } from "react";
+import { Link } from "react-router";
 
 
 
@@ -43,12 +44,18 @@ const Users = ({ userPromise }) => {
     })
       .then(res => res.json())
       .then(data => {
+        if(data.deletedCount){
+          const remainingUsers = users.filter(user => user._id !== id);
+          setUsers(remainingUsers);
+          alert('User deleted successfully');
+        }
         console.log("after delete", data);
       })
   }
   return (
     <div>
       <div>
+        <h2>Users:{users.length}</h2>
         <form onSubmit={handleAddUser}>
           <input type="text" name="name" />
           <br />
@@ -59,7 +66,9 @@ const Users = ({ userPromise }) => {
       </div>
       <div>
         {
-          users.map(user => <p key={user._id}>{user.name} : {user.email} <button onClick={() => handleDeleteUser(user._id)}>X</button></p>)
+          users.map(user => <p key={user._id}>{user.name} : {user.email} 
+          <Link to={`/users/${user._id}`}>Details</Link>
+          <button onClick={() => handleDeleteUser(user._id)}>X</button></p>)
         }
       </div>
     </div>
